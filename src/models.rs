@@ -36,7 +36,7 @@ pub struct NewDeveloper {
     pub project_id: i32,
 }
 
-#[derive(Queryable, Associations, Identifiable, Debug)]
+#[derive(Queryable, Associations, Identifiable, Debug, Serialize)]
 #[belongs_to(Project)]
 #[diesel(table_name = functions)]
 pub struct Function {
