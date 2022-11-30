@@ -1,4 +1,5 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use pando::routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -10,9 +11,10 @@ async fn main() -> std::io::Result<()> {
                 "/signed_url",
                 web::get().to(pando::api::handlers::signed_url_handler),
             )
-            .route(
-                "/project",
-                web::post().to(pando::api::handlers::create_project),
+            .service(
+                web::scope("/project")
+                    .route("/", web::post().to(routes::project::create))
+                    .route("/{projectId}", web::get().to(routes::project::find)),
             )
     })
     .bind(("127.0.0.1", 8080))?
