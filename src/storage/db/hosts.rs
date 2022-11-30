@@ -23,6 +23,17 @@ pub fn connect_host_to_function(
     Ok(host_function)
 }
 
+pub fn find_by_id(conn: &mut PgConnection, id: &i32) -> models::Host {
+    use crate::schema::hosts::dsl;
+
+    let query = dsl::hosts.filter(crate::schema::hosts::id.eq(id));
+
+    let host = query
+        .first::<models::Host>(conn)
+        .expect("Could not find host");
+
+    host
+}
 pub fn find_host_by_token(conn: &mut PgConnection, token: &str) -> models::Host {
     use crate::schema::hosts::dsl;
 
@@ -33,13 +44,6 @@ pub fn find_host_by_token(conn: &mut PgConnection, token: &str) -> models::Host 
         .expect("Could not find host");
 
     host
-}
-
-pub fn find_current_host() -> Result<models::Host> {
-    let conn = &mut establish_connection();
-    let config = utils::config::host::read_config();
-    let host = find_host_by_token(conn, &config.host.unwrap().token);
-    Ok(host)
 }
 
 impl models::Host {

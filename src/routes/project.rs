@@ -12,7 +12,7 @@ pub struct CreateProjectData {
     name: String,
     developer_id: i32,
 }
-pub async fn create(data: web::Json<CreateProjectData>) -> Result<HttpResponse> {
+pub async fn create(data: web::Json<CreateProjectData>) -> HttpResponse {
     let conn = &mut storage::db::establish_connection();
     // create project in databse
     let project = storage::db::create_project(conn, &data.name);
@@ -22,12 +22,12 @@ pub async fn create(data: web::Json<CreateProjectData>) -> Result<HttpResponse> 
 
     // return a response to the user
 
-    Ok(HttpResponse::Ok().json(project))
+    HttpResponse::Ok().json(project)
 }
 
-pub async fn find(path: web::Path<i32>) -> Result<models::Project> {
+pub async fn find(path: web::Path<i32>) -> HttpResponse {
     let project_id = path.into_inner();
     let conn = &mut establish_connection();
     let project = storage::db::find_project(conn, &project_id);
-    Ok(project)
+    HttpResponse::Ok().json(project)
 }

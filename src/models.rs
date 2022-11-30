@@ -13,28 +13,6 @@ pub struct Project {
     pub name: String,
 }
 
-impl Project {
-    pub fn calculate_hash(&self) -> String {
-        let mut s = DefaultHasher::new();
-        self.hash(&mut s);
-        s.finish().to_string()
-    }
-    pub fn host_dir(&self) -> std::path::PathBuf {
-        let path = std::path::PathBuf::from(format!(
-            "{}/{}/",
-            utils::config::host::aspn_dir(),
-            self.calculate_hash()
-        ));
-        // make sure the dir exists
-        std::fs::create_dir_all(&path).unwrap();
-        path
-    }
-
-    pub fn connect(&self) -> Result<()> {
-        utils::config::project::save_project_connnection(self)
-    }
-}
-
 #[derive(Insertable)]
 #[diesel(table_name = projects)]
 pub struct NewProject<'a> {
@@ -58,7 +36,7 @@ pub struct NewDeveloper {
     pub project_id: i32,
 }
 
-#[derive(Queryable, Associations, Identifiable, Debug)]
+#[derive(Queryable, Associations, Identifiable, Debug, Serialize)]
 #[belongs_to(Project)]
 #[diesel(table_name = functions)]
 pub struct Function {
