@@ -1,8 +1,8 @@
-use actix_web::HttpResponse;
+use actix_web::{web, HttpResponse};
 
-pub fn create() -> HttpResponse {
+pub async fn create() -> HttpResponse {
     todo!("implement the create host handler")
 }
-pub fn find() -> HttpResponse {
+pub async fn find(path: web::Path<i32>) -> HttpResponse {
     todo!("implement the find host handler")
 }
