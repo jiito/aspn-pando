@@ -14,35 +14,6 @@ use tokio::fs::File;
 
 use ring::{rand, signature};
 
-pub enum SignedURLRequest {
-    Upload { path: String },
-    Download { path: String },
-}
-
-pub async fn request_signed_url(
-    request: SignedURLRequest,
-) -> Result<crate::api::handlers::SignedUrlResponse> {
-    let client = reqwest::Client::new();
-
-    let (method, path) = match request {
-        SignedURLRequest::Upload { path } => ("PUT", path),
-        SignedURLRequest::Download { path } => ("GET", urlencoding::encode(&path).to_string()),
-    };
-
-    println!("{} : {}", method, path);
-    let response: crate::api::handlers::SignedUrlResponse = client
-        .get("http://localhost:8080/signed_url") // TODO; move this to the API URL env var
-        .query(&[("method", method), ("object_name", &path[..])])
-        .send()
-        .await
-        .with_context(|| "Could not send the request")?
-        .json::<crate::api::handlers::SignedUrlResponse>()
-        .await?;
-
-    println!("{:?}", response);
-    Ok(response)
-}
-
 async fn request_gcp(
     path: String,
     headers: HeaderMap,
