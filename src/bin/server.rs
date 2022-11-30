@@ -19,7 +19,8 @@ async fn main() -> std::io::Result<()> {
             .service(
                 web::scope("/host")
                     .route("", web::post().to(routes::host::create))
-                    .route("/{hostId}", web::get().to(routes::host::find))
+                    .route("", web::get().to(routes::host::find))
+                    .route("/{hostId}", web::get().to(routes::host::find_by_id))
                     .route("/{hostId}/connect", web::post().to(routes::host::connect)),
             )
             .service(
