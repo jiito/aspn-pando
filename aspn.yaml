@@ -1,0 +1,10 @@
+project:
+  name: hello-world
+  url: apsn.network
+  id: 1
+developer:
+  email: benjamin.allanrahill@gmail.com
+service:
+  entrypoint: /Users/bjar/Documents/main.wasm
+  route: hello_world
+  build:
