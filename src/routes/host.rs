@@ -24,5 +24,16 @@ pub async fn find(path: web::Path<FindQueryParams>) -> HttpResponse {
 
 pub async fn connect(path: web::Path<i32>) -> HttpResponse {
     let id = path.into_inner();
-    todo!("implement the find host handler")
+
+    let conn = &mut establish_connection();
+    let host = storage::db::hosts::find_by_id(conn, &id);
+    host.online(conn);
+    HttpResponse::Ok().into()
+}
+pub async fn disconnect(path: web::Path<i32>) -> HttpResponse {
+    let id = path.into_inner();
+    let conn = &mut establish_connection();
+    let host = storage::db::hosts::find_by_id(conn, &id);
+    host.offline(conn);
+    HttpResponse::Ok().into()
 }
