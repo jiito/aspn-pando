@@ -21,6 +21,11 @@ async fn main() -> std::io::Result<()> {
                     .route("/", web::post().to(routes::host::create))
                     .route("/{hostId}", web::get().to(routes::host::find)),
             )
+            .service(
+                web::scope("/function")
+                    .route("/", web::post().to(routes::function::create))
+                    .route("/{functionId}", web::get().to(routes::function::find)),
+            )
     })
     .bind(("127.0.0.1", 8080))?
     .run()
