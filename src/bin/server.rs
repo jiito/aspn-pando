@@ -23,8 +23,8 @@ async fn main() -> std::io::Result<()> {
             )
             .service(
                 web::scope("/function")
-                    .route("/", web::post().to(routes::function::create))
-                    .route("/", web::get().to(routes::function::find))
+                    .route("", web::post().to(routes::function::create))
+                    .route("", web::get().to(routes::function::find))
                     .route("/{functionId}", web::get().to(routes::function::find_by_id)),
             )
     })
