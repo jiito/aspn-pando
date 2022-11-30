@@ -7,3 +7,8 @@ pub async fn find(path: web::Path<i32>) -> HttpResponse {
     let id = path.into_inner();
     todo!("implement the find host handler")
 }
+
+pub async fn connect(path: web::Path<i32>) -> HttpResponse {
+    let id = path.into_inner();
+    todo!("implement the find host handler")
+}
