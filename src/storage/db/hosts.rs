@@ -1,8 +1,9 @@
-use crate::utils;
 use crate::{models, storage::db::establish_connection};
-use anyhow::Result;
+use crate::{storage, utils};
+use anyhow::{Context, Result};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
+use diesel::upsert::*;
 
 pub fn connect_host_to_function(
     conn: &mut PgConnection,
@@ -18,9 +19,21 @@ pub fn connect_host_to_function(
 
     let host_function = diesel::insert_into(hosts_functions::table)
         .values(&new_host_function)
-        .get_result::<models::HostsFunctions>(conn)?;
+        .on_conflict_do_nothing()
+        .get_result::<models::HostsFunctions>(conn)
+        .optional()
+        .context("Saving host function")?;
 
-    Ok(host_function)
+    match host_function {
+        Some(hf) => Ok(hf),
+        None => {
+            let h = hosts_functions::dsl::hosts_functions
+                .filter(hosts_functions::function_id.eq(func_id))
+                .filter(hosts_functions::host_id.eq(host_id))
+                .first::<models::HostsFunctions>(conn)?;
+            Ok(h)
+        }
+    }
 }
 
 pub fn find_by_id(conn: &mut PgConnection, id: &i32) -> models::Host {
@@ -50,13 +63,13 @@ impl models::Host {
     pub fn online(&self, conn: &mut PgConnection) -> Result<()> {
         diesel::update(self)
             .set(crate::schema::hosts::is_online.eq(true))
-            .execute(conn);
+            .execute(conn)?;
         Ok(())
     }
     pub fn offline(&self, conn: &mut PgConnection) -> Result<()> {
         diesel::update(self)
             .set(crate::schema::hosts::is_online.eq(false))
-            .execute(conn);
+            .execute(conn)?;
         Ok(())
     }
 }
