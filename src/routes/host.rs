@@ -1,10 +1,15 @@
 use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
-use crate::storage::{self, db::establish_connection};
+use crate::{
+    models,
+    storage::{self, db::establish_connection},
+};
 
-pub async fn create() -> HttpResponse {
-    todo!("implement the create host handler")
+pub async fn create(data: web::Json<models::NewHost>) -> HttpResponse {
+    let conn = &mut establish_connection();
+    let host = data.save(conn);
+    HttpResponse::Ok().json(host)
 }
 
 #[derive(Debug, Serialize, Deserialize)]

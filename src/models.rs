@@ -61,7 +61,7 @@ pub struct Host {
     pub is_online: bool,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[diesel(table_name = hosts)]
 pub struct NewHost {
     pub ip_address: ipnetwork::IpNetwork,
