@@ -1,7 +1,7 @@
 use crate::{schema::*, utils};
 use anyhow::Result;
 use diesel::prelude::*;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{
     collections::hash_map::DefaultHasher,
     hash::{Hash, Hasher},
@@ -45,7 +45,7 @@ pub struct Function {
     pub route: String,
     pub project_id: i32,
 }
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[diesel(table_name = functions)]
 pub struct NewFunction {
     pub gcs_uri: String,

@@ -1,9 +1,16 @@
-use crate::storage::{self, db::establish_connection};
+use crate::{
+    models,
+    storage::{self, db::establish_connection},
+};
 use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
-pub async fn create() -> HttpResponse {
-    todo!("Implement the create function for the functions")
+pub async fn create(data: web::Json<models::NewFunction>) -> HttpResponse {
+    let conn = &mut establish_connection();
+
+    let function = storage::db::functions::save(conn, &data).unwrap();
+
+    HttpResponse::Ok().json(function)
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FindQueryParams {
