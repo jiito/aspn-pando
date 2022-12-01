@@ -30,7 +30,7 @@ pub fn save_w_host(
     host: &models::Host,
 ) -> Result<models::Function> {
     let function = save(conn, new_function)?;
-    storage::db::hosts::connect_host_to_function(conn, host, &function)?;
+    storage::db::hosts::connect_host_to_function(conn, &host.id, &function.id)?;
 
     Ok(function)
 }
