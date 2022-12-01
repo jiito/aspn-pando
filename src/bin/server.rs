@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
                     //TODO: Move this to a sep service
                     .route(
                         "/{hostId}/{functionId}/connect",
-                        web::post().to(routes::host::create),
+                        web::post().to(routes::host::connect_to_function),
                     )
                     .route("", web::get().to(routes::host::find))
                     .route("/{hostId}/connect", web::post().to(routes::host::connect))
