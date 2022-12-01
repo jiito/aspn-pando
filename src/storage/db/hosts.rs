@@ -6,14 +6,14 @@ use diesel::prelude::*;
 
 pub fn connect_host_to_function(
     conn: &mut PgConnection,
-    host: &models::Host,
-    func: &models::Function,
+    host_id: &i32,
+    func_id: &i32,
 ) -> Result<models::HostsFunctions> {
     use crate::schema::hosts_functions;
 
     let new_host_function = models::NewHostFunctionIDs {
-        host_id: host.id,
-        function_id: func.id,
+        host_id: *host_id,
+        function_id: *func_id,
     };
 
     let host_function = diesel::insert_into(hosts_functions::table)
@@ -62,12 +62,12 @@ impl models::Host {
 }
 
 impl models::NewHost {
-    pub fn save(&self, conn: &mut PgConnection) {
+    pub fn save(&self, conn: &mut PgConnection) -> models::Host {
         use crate::schema::hosts;
 
         diesel::insert_into(hosts::table)
             .values(self)
             .get_result::<models::Host>(conn)
-            .expect("Could not save host");
+            .expect("Could not save host")
     }
 }

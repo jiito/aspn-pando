@@ -22,6 +22,16 @@ pub async fn find(path: web::Path<FindQueryParams>) -> HttpResponse {
     }
 }
 
+pub async fn connect_to_function(path: web::Path<(i32, i32)>) -> HttpResponse {
+    let (host_id, function_id) = path.into_inner();
+
+    let conn = &mut establish_connection();
+    let host_function =
+        storage::db::hosts::connect_host_to_function(conn, &host_id, &function_id).unwrap();
+
+    HttpResponse::Ok().json(host_function)
+}
+
 pub async fn connect(path: web::Path<i32>) -> HttpResponse {
     let id = path.into_inner();
 
