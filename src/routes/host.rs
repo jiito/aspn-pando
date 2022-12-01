@@ -16,13 +16,14 @@ pub async fn create(data: web::Json<models::NewHost>) -> HttpResponse {
 pub struct FindQueryParams {
     token: Option<String>,
 }
-pub async fn find(path: web::Path<FindQueryParams>) -> HttpResponse {
+pub async fn find(path: web::Query<FindQueryParams>) -> HttpResponse {
     let conn = &mut establish_connection();
 
     if let Some(token) = path.token.as_deref() {
         let host = storage::db::hosts::find_host_by_token(conn, &token);
         HttpResponse::Ok().json(host)
     } else {
+        println!("No token in req");
         HttpResponse::InternalServerError().into()
     }
 }
@@ -37,18 +38,22 @@ pub async fn connect_to_function(path: web::Path<(i32, i32)>) -> HttpResponse {
     HttpResponse::Ok().json(host_function)
 }
 
+#[derive(Serialize)]
+struct ConnectionResponse {
+    is_online: bool,
+}
 pub async fn connect(path: web::Path<i32>) -> HttpResponse {
     let id = path.into_inner();
 
     let conn = &mut establish_connection();
     let host = storage::db::hosts::find_by_id(conn, &id);
-    host.online(conn);
-    HttpResponse::Ok().into()
+    host.online(conn).unwrap();
+    HttpResponse::Ok().json(ConnectionResponse { is_online: true })
 }
 pub async fn disconnect(path: web::Path<i32>) -> HttpResponse {
     let id = path.into_inner();
     let conn = &mut establish_connection();
     let host = storage::db::hosts::find_by_id(conn, &id);
-    host.offline(conn);
-    HttpResponse::Ok().into()
+    host.offline(conn).unwrap();
+    HttpResponse::Ok().json(ConnectionResponse { is_online: false })
 }
