@@ -6,6 +6,7 @@ diesel::table! {
         name -> Varchar,
         ip_address -> Inet,
         project_id -> Nullable<Int4>,
+        auth_token -> Nullable<Varchar>,
     }
 }
 

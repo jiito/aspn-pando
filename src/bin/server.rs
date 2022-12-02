@@ -17,6 +17,15 @@ async fn main() -> std::io::Result<()> {
                     .route("/{projectId}", web::get().to(routes::project::find)),
             )
             .service(
+                web::scope("/developer")
+                    .route("/", web::post().to(routes::developer::create))
+                    .route("", web::get().to(routes::developer::find))
+                    .route(
+                        "/{developerId}",
+                        web::get().to(routes::developer::find_by_id),
+                    ),
+            )
+            .service(
                 web::scope("/host")
                     .route("", web::post().to(routes::host::create))
                     //TODO: Move this to a sep service

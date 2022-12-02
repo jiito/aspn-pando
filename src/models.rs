@@ -27,6 +27,7 @@ pub struct Developer {
     pub name: String,
     pub ip_address: ipnetwork::IpNetwork,
     pub project_id: Option<i32>,
+    pub auth_token: Option<String>,
 }
 
 #[derive(Insertable)]
@@ -34,6 +35,7 @@ pub struct Developer {
 pub struct NewDeveloper {
     pub name: String,
     pub project_id: i32,
+    pub auth_token: Option<String>,
 }
 
 #[derive(Queryable, Associations, Identifiable, Debug, Serialize)]
