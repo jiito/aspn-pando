@@ -25,7 +25,6 @@ pub struct NewProject<'a> {
 pub struct Developer {
     pub id: i32,
     pub name: String,
-    pub ip_address: ipnetwork::IpNetwork,
     pub project_id: Option<i32>,
     pub auth_token: Option<String>,
 }

@@ -13,12 +13,12 @@ async fn main() -> std::io::Result<()> {
             )
             .service(
                 web::scope("/project")
-                    .route("/", web::post().to(routes::project::create))
+                    .route("", web::post().to(routes::project::create))
                     .route("/{projectId}", web::get().to(routes::project::find)),
             )
             .service(
                 web::scope("/developer")
-                    .route("/", web::post().to(routes::developer::create))
+                    .route("", web::post().to(routes::developer::create))
                     .route("", web::get().to(routes::developer::find))
                     .route(
                         "/{developerId}",

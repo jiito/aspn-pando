@@ -10,7 +10,7 @@ pub fn save(conn: &mut PgConnection, developer: &NewDeveloper) -> usize {
         .values(developer)
         .on_conflict(developers::id)
         .do_update()
-        .set(developers::project_id.eq(0))
+        .set(developers::project_id.eq(developer.project_id))
         .execute(conn)
         .expect("Could not update the developer")
 }
@@ -35,6 +35,7 @@ pub fn find_by_token(conn: &mut PgConnection, token: &str) -> Result<Developer> 
     let developer = query
         .first::<Developer>(conn)
         .expect("Can't find developer");
+    println!("Found the developer {:?}", developer);
 
     Ok(developer)
 }

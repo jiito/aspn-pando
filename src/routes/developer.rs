@@ -20,6 +20,7 @@ pub async fn create(data: web::Json<models::NewDeveloper>) -> HttpResponse {
         .expect("Cannot find the developer with that token");
         HttpResponse::Ok().json(developer)
     } else {
+        println!("Could not update the developer");
         HttpResponse::InternalServerError().into()
     }
 }
