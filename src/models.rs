@@ -19,7 +19,7 @@ pub struct NewProject<'a> {
     pub name: &'a str,
 }
 
-#[derive(Queryable, Associations, Identifiable, Debug)]
+#[derive(Queryable, Serialize, Associations, Identifiable, Debug)]
 #[belongs_to(Project)]
 #[diesel(table_name = developers)]
 pub struct Developer {
@@ -30,7 +30,7 @@ pub struct Developer {
     pub auth_token: Option<String>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[diesel(table_name = developers)]
 pub struct NewDeveloper {
     pub name: String,

@@ -17,11 +17,13 @@ pub async fn create(data: web::Json<CreateProjectData>) -> HttpResponse {
     let project = storage::db::project::create_project(conn, &data.name);
 
     // add project to developer accounts
-    let developer = storage::db::developer::find(conn, &data.developer_id);
+    let developer = storage::db::developer::find_by_id(conn, &data.developer_id)
+        .expect("Could not find the developer");
 
     let update_dev = NewDeveloper {
         project_id: project.id,
         name: developer.name,
+        auth_token: developer.auth_token,
     };
     let changed = storage::db::developer::save(conn, &update_dev);
 

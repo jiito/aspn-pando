@@ -1,3 +1,4 @@
+use anyhow::Result;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
@@ -14,7 +15,7 @@ pub fn save(conn: &mut PgConnection, developer: &NewDeveloper) -> usize {
         .expect("Could not update the developer")
 }
 
-pub fn find_by_id(conn: &mut PgConnection, id: &i32) -> Developer {
+pub fn find_by_id(conn: &mut PgConnection, id: &i32) -> Result<Developer> {
     use crate::schema::developers::dsl;
 
     let query = dsl::developers.filter(crate::schema::developers::id.eq(id));
@@ -23,10 +24,10 @@ pub fn find_by_id(conn: &mut PgConnection, id: &i32) -> Developer {
         .first::<Developer>(conn)
         .expect("Can't find developer");
 
-    developer
+    Ok(developer)
 }
 
-pub fn find_by_token(conn: &mut PgConnection, token: &str) -> Developer {
+pub fn find_by_token(conn: &mut PgConnection, token: &str) -> Result<Developer> {
     use crate::schema::developers::dsl;
 
     let query = dsl::developers.filter(crate::schema::developers::auth_token.eq(token));
@@ -35,5 +36,5 @@ pub fn find_by_token(conn: &mut PgConnection, token: &str) -> Developer {
         .first::<Developer>(conn)
         .expect("Can't find developer");
 
-    developer
+    Ok(developer)
 }

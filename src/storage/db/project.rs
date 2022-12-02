@@ -14,8 +14,6 @@ pub fn create_project(conn: &mut PgConnection, name: &str) -> Project {
 pub fn get_projects(conn: &mut PgConnection) -> Vec<Project> {
     use crate::schema::projects::dsl;
 
-    let connection = &mut establish_connection();
-
     let results = dsl::projects
         .load::<Project>(conn)
         .expect("Error loeading post");
