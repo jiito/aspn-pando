@@ -17,10 +17,16 @@ pub fn save(
 
     let function = diesel::insert_into(functions::table)
         .values(new_function)
+        .on_conflict_do_nothing()
         .get_result::<models::Function>(conn)
+        .optional()
         .with_context(|| "failed to save function")?;
     println!("Saved the func dawg");
 
+    let function = match function {
+        Some(f) => f,
+        None => find_by_project(conn, &new_function.project_id)?,
+    };
     Ok(function)
 }
 
