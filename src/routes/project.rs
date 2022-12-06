@@ -21,7 +21,7 @@ pub async fn create(data: web::Json<CreateProjectData>) -> HttpResponse {
         .expect("Could not find the developer");
 
     let update_dev = NewDeveloper {
-        project_id: project.id,
+        project_id: Some(project.id),
         name: developer.name,
         auth_token: developer.auth_token,
     };

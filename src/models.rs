@@ -33,7 +33,7 @@ pub struct Developer {
 #[diesel(table_name = developers)]
 pub struct NewDeveloper {
     pub name: String,
-    pub project_id: i32,
+    pub project_id: Option<i32>,
     pub auth_token: Option<String>,
 }
 
