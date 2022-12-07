@@ -1,5 +1,5 @@
+use crate::storage;
 use crate::{models, storage::db::establish_connection};
-use crate::{storage, utils};
 use anyhow::{Context, Result};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
@@ -34,6 +34,19 @@ pub fn connect_host_to_function(
             Ok(h)
         }
     }
+}
+pub fn find_hosts_connect_to_func(
+    conn: &mut PgConnection,
+    func: &models::Function,
+) -> Result<Vec<models::Host>> {
+    use crate::schema::hosts;
+    use crate::schema::hosts_functions;
+
+    let h: Vec<models::Host> = models::HostsFunctions::belonging_to(func)
+        .inner_join(hosts::table)
+        .select(hosts::all_columns)
+        .load(conn)?;
+    Ok(h)
 }
 
 pub fn find_by_id(conn: &mut PgConnection, id: &i32) -> models::Host {
@@ -82,5 +95,21 @@ impl models::NewHost {
             .values(self)
             .get_result::<models::Host>(conn)
             .expect("Could not save host")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::storage::db::{establish_connection, functions};
+
+    use super::find_hosts_connect_to_func;
+
+    #[test]
+    fn get_hosts_for_functions() {
+        let conn = &mut establish_connection();
+        let func = functions::find_by_id(conn, &8).unwrap();
+        let hosts = find_hosts_connect_to_func(conn, &func).unwrap();
+        assert_eq!(hosts.len(), 2);
+        println!("{:?}", hosts)
     }
 }

@@ -5,7 +5,6 @@ use diesel::PgConnection;
 
 use crate::models;
 use crate::storage;
-use crate::utils;
 
 pub fn save(
     conn: &mut PgConnection,
@@ -59,6 +58,11 @@ pub fn find_by_project(conn: &mut PgConnection, project_id: &i32) -> Result<mode
     let functions = query.first::<models::Function>(conn)?;
 
     Ok(functions)
+}
+pub fn connected_hosts(conn: &mut PgConnection, id: &i32) -> Result<Vec<models::Host>> {
+    let function = find_by_id(conn, id)?;
+    let hosts = storage::db::hosts::find_hosts_connect_to_func(conn, &function);
+    hosts
 }
 
 pub fn upsert(conn: &mut PgConnection, function: &models::NewFunction) -> Result<usize> {
