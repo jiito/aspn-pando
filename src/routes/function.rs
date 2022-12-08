@@ -2,8 +2,10 @@ use crate::{
     models,
     storage::{self, db::establish_connection},
 };
-use actix_web::{web, HttpResponse};
+use actix_web::{body::BoxBody, web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
+
+use super::proxy::proxy_request;
 
 pub async fn create(data: web::Json<models::NewFunction>) -> HttpResponse {
     let conn = &mut establish_connection();
@@ -36,4 +38,12 @@ pub async fn find(path: web::Query<FindQueryParams>) -> HttpResponse {
     } else {
         HttpResponse::InternalServerError().into()
     }
+}
+
+pub async fn proxy(path: web::Path<i32>) -> HttpResponse {
+    let res = proxy_request(&path.into_inner())
+        .await
+        .expect("Problem proxying request");
+    let body = BoxBody::new(res.text().await.unwrap());
+    HttpResponse::Ok().body(body)
 }

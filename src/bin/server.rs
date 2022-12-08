@@ -1,12 +1,17 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use pando::routes;
+use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use pando::{routes, storage::db::establish_connection};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::fs::create_dir_all("./tmp")?;
 
+    // This will run the necessary migrations.
     HttpServer::new(|| {
         App::new()
+            .route(
+                "/",
+                web::get().to(|| async { HttpResponse::Ok().json("Hello from Aspn!") }),
+            )
             .route(
                 "/signed_url",
                 web::get().to(pando::api::handlers::signed_url_handler),
@@ -44,10 +49,14 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/function")
                     .route("", web::post().to(routes::function::create))
                     .route("", web::get().to(routes::function::find))
-                    .route("/{functionId}", web::get().to(routes::function::find_by_id)),
+                    .route("/{functionId}", web::get().to(routes::function::find_by_id))
+                    .route(
+                        "/{functionId}/proxy",
+                        web::get().to(routes::function::proxy),
+                    ),
             )
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }
