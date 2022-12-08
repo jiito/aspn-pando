@@ -19,6 +19,7 @@ async fn main() -> std::io::Result<()> {
             .service(
                 web::scope("/project")
                     .route("", web::post().to(routes::project::create))
+                    .route("", web::get().to(routes::project::find_all))
                     .route("/{projectId}", web::get().to(routes::project::find)),
             )
             .service(

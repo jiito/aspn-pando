@@ -38,3 +38,9 @@ pub async fn find(path: web::Path<i32>) -> HttpResponse {
     let project = storage::db::project::find_project(conn, &project_id);
     HttpResponse::Ok().json(project)
 }
+
+pub async fn find_all() -> HttpResponse {
+    let conn = &mut establish_connection();
+    let projects = storage::db::project::get_projects(conn);
+    HttpResponse::Ok().json(projects)
+}
