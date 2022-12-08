@@ -5,6 +5,3 @@ create table functions (
        project_id INT NOT NULL,
        CONSTRAINT fk_project FOREIGN KEY(project_id) REFERENCES projects(id)
 );
-
-insert into functions (ref_name, route, project_id)
-values('test_ref_name', '/test_route', 1);

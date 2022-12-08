@@ -1,3 +1,4 @@
 pub fn database_url() -> String {
-    std::env::var("DATABASE_URL").unwrap_or("postgresql://localhost:5432/pando".to_string())
+    std::env::var("DATABASE_URL")
+        .unwrap_or("postgres://postgres:1CUhBqvLusL6dJF@pando-psql.internal:5432".to_string())
 }
